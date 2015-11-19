@@ -8,10 +8,10 @@ uniform float gradientStep;
 uniform float advectStep;
 uniform float flipHeightMap;
 uniform float expand;
-uniform vec4 advectMatrix;
+
 
 void main() {
-
+     vec4 advectMatrix = vec4 (0.1);
      vec4 cxp = texture2D(heightMap, vec2(tc.x + gradientStep, flipHeightMap*tc.y));
      vec4 cxn = texture2D(heightMap, vec2(tc.x - gradientStep, flipHeightMap*tc.y));
      vec4 cyp = texture2D(heightMap, vec2(tc.x, flipHeightMap*(tc.y + gradientStep)));

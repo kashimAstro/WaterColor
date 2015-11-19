@@ -13,7 +13,6 @@ class ofApp : public ofBaseApp{
         ofParameter<float> stepGradient;
         ofParameter<float> advectStep;
         ofParameter<float> flipHeightMap;
-        ofParameter<ofVec4f> advectMatrix;
         ofParameter<float> expand;
         ofParameter<bool> switchVideo;
 
@@ -45,7 +44,6 @@ class ofApp : public ofBaseApp{
             gui.add(advectStep.set("step advect",        .0015, -.1, .1));
             gui.add(flipHeightMap.set("flip height map",  0.7,   0.,  2.));
             gui.add(expand.set("expand",  0.,   0.,  1.));
-            gui.add(advectMatrix.set("advect matrix",  ofVec4f(0.1),   ofVec4f(-1.),  ofVec4f(1.)));
             gui.add(switchVideo.set("switch video", false));
             switchVideo.addListener(this,&ofApp::switchViewEvent);
         }
@@ -76,7 +74,6 @@ class ofApp : public ofBaseApp{
             wc.setUniform1f("gradientStep", stepGradient);
             wc.setUniform1f("advectStep",   advectStep);
             wc.setUniform1f("flipHeightMap",flipHeightMap);
-            wc.setUniform4f("advectMatrix",advectMatrix->w,advectMatrix->x,advectMatrix->y,advectMatrix->z);
 
             fbo.draw(0,0);
 
