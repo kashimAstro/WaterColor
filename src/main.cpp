@@ -15,6 +15,7 @@ class ofApp : public ofBaseApp{
         ofParameter<float> flipHeightMap;
         ofParameter<float> expand;
         ofParameter<bool> switchVideo;
+        bool hidegui;
 
         void setup(){
             ofSetVerticalSync(false);
@@ -78,29 +79,37 @@ class ofApp : public ofBaseApp{
             fbo.draw(0,0);
 
             wc.end();
-            img.draw(0,0,img.getWidth()/4,img.getHeight()/4);
-            player.draw(img.getWidth()/4,0,img.getWidth()/4,img.getHeight()/4);
-            gui.draw();
+            if(hidegui){
+                img.draw(0,0,img.getWidth()/4,img.getHeight()/4);
+                player.draw(img.getWidth()/4,0,img.getWidth()/4,img.getHeight()/4);
+                gui.draw();
+            }
         }
 
         void keyPressed(int key){
-            switchVideo.set("switch video", false);
+
             if(key == '1'){
                 img.load("1.jpg");
                 fbo.allocate(img.getWidth(),img.getHeight());
+                switchVideo.set("switch video", false);
             }
             if(key == '2'){
                 img.load("2.jpg");
                 fbo.allocate(img.getWidth(),img.getHeight());
+                switchVideo.set("switch video", false);
             }
             if(key == '3'){
                 img.load("3.jpg");
                 fbo.allocate(img.getWidth(),img.getHeight());
+                switchVideo.set("switch video", false);
             }
             if(key == '4'){
                 img.load("4.jpg");
                 fbo.allocate(img.getWidth(),img.getHeight());
+                switchVideo.set("switch video", false);
             }
+            if(key == ' ')
+                hidegui=!hidegui;
         }
 };
 
