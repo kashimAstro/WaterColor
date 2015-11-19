@@ -49,13 +49,18 @@ class ofApp : public ofBaseApp{
             switchVideo.addListener(this,&ofApp::switchViewEvent);
         }
 
-        void switchViewEvent(bool & value){
-            fbo.allocate(player.getWidth(),player.getHeight());
+        void switchViewEvent(bool & value) {
+            if(value) fbo.allocate(player.getWidth(),player.getHeight());
         }
 
         void update(){
             ofSetWindowTitle(ofToString(ofGetFrameRate()));
             player.update();
+        }
+
+        void exit(){
+            player.stop();
+            player.close();
         }
 
         void draw(){
@@ -87,7 +92,6 @@ class ofApp : public ofBaseApp{
         }
 
         void keyPressed(int key){
-
             if(key == '1'){
                 img.load("1.jpg");
                 fbo.allocate(img.getWidth(),img.getHeight());
