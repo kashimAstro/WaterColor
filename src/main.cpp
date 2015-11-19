@@ -6,7 +6,8 @@ class ofApp : public ofBaseApp{
         ofShader wc;
         ofImage img;
         ofImage gray;
-        ofFbo fbo;
+        ofVideoPlayer player;
+        ofFbo fbo,fboDepth;
         int w,h;
         ofxPanel gui;
         ofParameter<float> stepGradient;
@@ -14,6 +15,7 @@ class ofApp : public ofBaseApp{
         ofParameter<float> flipHeightMap;
         ofParameter<ofVec4f> advectMatrix;
         ofParameter<float> time;
+        ofParameter<bool> switchVideo;
 
         void setup(){
             ofSetVerticalSync(false);
@@ -23,10 +25,19 @@ class ofApp : public ofBaseApp{
 
             ofDisableArbTex();
             img.load("1.jpg");
+            player.load("1.mp4");
+            player.play();
+            player.setLoopState(OF_LOOP_NORMAL);
             gray = img;
             gray.setImageType(OF_IMAGE_GRAYSCALE);
             wc.load("wcolor.vert","wcolor.frag");
 
+            ofFbo::Settings s;
+            s.depthStencilAsTexture=true;
+            s.useDepth=true;
+            s.width=w;
+            s.height=h;
+            fboDepth.allocate(s);
             fbo.allocate(w,h);
             fbo.begin();
             ofClear(0,0,100,255);
@@ -36,18 +47,29 @@ class ofApp : public ofBaseApp{
             gui.add(stepGradient.set("step gradient",    .0015, -1., 1.));
             gui.add(advectStep.set("step advect",        .0015, -.1, .1));
             gui.add(flipHeightMap.set("flip height map",  0.7,   0.,  2.));
-            gui.add(time.set("time",  0.,   0.,  5.));
+            gui.add(time.set("time",  0.,   0.,  1.));
             gui.add(advectMatrix.set("advect matrix",  ofVec4f(0.1),   ofVec4f(-1.),  ofVec4f(1.)));
+            gui.add(switchVideo.set("switch video", false));
         }
 
         void update(){
             ofSetWindowTitle(ofToString(ofGetFrameRate()));
+            player.update();
         }
 
         void draw(){
             wc.begin();
-            wc.setUniformTexture("colorMap", img.getTexture(), 1);
-            wc.setUniformTexture("heightMap",gray.getTexture(),2);
+            if(!switchVideo){
+                wc.setUniformTexture("colorMap", img.getTexture(),  1);
+                wc.setUniformTexture("heightMap",gray.getTexture(), 2);
+            }
+            else{
+                wc.setUniformTexture("colorMap", player.getTexture(), 1);
+                fboDepth.begin();
+                player.draw(0,0);
+                fboDepth.end();
+                wc.setUniformTexture("heightMap",fboDepth.getDepthTexture(),2);
+            }
             wc.setUniform1f("time", ofGetElapsedTimef()*time);
             wc.setUniform1f("gradientStep", stepGradient);
             wc.setUniform1f("advectStep",   advectStep);
@@ -58,6 +80,7 @@ class ofApp : public ofBaseApp{
 
             wc.end();
             img.draw(0,0,img.getWidth()/4,img.getHeight()/4);
+            player.draw(img.getWidth()/4,0,img.getWidth()/4,img.getHeight()/4);
             gui.draw();
         }
 
