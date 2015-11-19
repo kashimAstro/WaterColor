@@ -14,7 +14,7 @@ class ofApp : public ofBaseApp{
         ofParameter<float> advectStep;
         ofParameter<float> flipHeightMap;
         ofParameter<ofVec4f> advectMatrix;
-        ofParameter<float> time;
+        ofParameter<float> expand;
         ofParameter<bool> switchVideo;
 
         void setup(){
@@ -38,18 +38,20 @@ class ofApp : public ofBaseApp{
             s.width=w;
             s.height=h;
             fboDepth.allocate(s);
-            fbo.allocate(w,h);
-            fbo.begin();
-            ofClear(0,0,100,255);
-            fbo.end();
+            fbo.allocate(img.getWidth(),img.getHeight());
 
             gui.setup();
             gui.add(stepGradient.set("step gradient",    .0015, -1., 1.));
             gui.add(advectStep.set("step advect",        .0015, -.1, .1));
             gui.add(flipHeightMap.set("flip height map",  0.7,   0.,  2.));
-            gui.add(time.set("time",  0.,   0.,  1.));
+            gui.add(expand.set("expand",  0.,   0.,  1.));
             gui.add(advectMatrix.set("advect matrix",  ofVec4f(0.1),   ofVec4f(-1.),  ofVec4f(1.)));
             gui.add(switchVideo.set("switch video", false));
+            switchVideo.addListener(this,&ofApp::switchViewEvent);
+        }
+
+        void switchViewEvent(bool & value){
+            fbo.allocate(player.getWidth(),player.getHeight());
         }
 
         void update(){
@@ -70,7 +72,7 @@ class ofApp : public ofBaseApp{
                 fboDepth.end();
                 wc.setUniformTexture("heightMap",fboDepth.getDepthTexture(),2);
             }
-            wc.setUniform1f("time", ofGetElapsedTimef()*time);
+            wc.setUniform1f("expand", ofGetElapsedTimef()*expand);
             wc.setUniform1f("gradientStep", stepGradient);
             wc.setUniform1f("advectStep",   advectStep);
             wc.setUniform1f("flipHeightMap",flipHeightMap);
@@ -85,14 +87,23 @@ class ofApp : public ofBaseApp{
         }
 
         void keyPressed(int key){
-            if(key == '1')
+            switchVideo.set("switch video", false);
+            if(key == '1'){
                 img.load("1.jpg");
-            if(key == '2')
+                fbo.allocate(img.getWidth(),img.getHeight());
+            }
+            if(key == '2'){
                 img.load("2.jpg");
-            if(key == '3')
+                fbo.allocate(img.getWidth(),img.getHeight());
+            }
+            if(key == '3'){
                 img.load("3.jpg");
-            if(key == '4')
+                fbo.allocate(img.getWidth(),img.getHeight());
+            }
+            if(key == '4'){
                 img.load("4.jpg");
+                fbo.allocate(img.getWidth(),img.getHeight());
+            }
         }
 };
 

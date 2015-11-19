@@ -7,7 +7,7 @@ uniform sampler2D heightMap;
 uniform float gradientStep;
 uniform float advectStep;
 uniform float flipHeightMap;
-uniform float time;
+uniform float expand;
 uniform vec4 advectMatrix;
 
 void main() {
@@ -24,9 +24,8 @@ void main() {
      float ayn = dot(grey, cyn.xyz);
 
      vec2 grad = vec2(axp - axn, ayp - ayn);
-     vec2 newtc = tc + advectStep * normalize(advectMatrix.xy * grad) * time;
+     vec2 newtc = tc + advectStep * normalize(advectMatrix.xy * grad) * expand;
 
      gl_FragColor.rgb = texture2D(colorMap, newtc).rgb * color.rgb;
      gl_FragColor.a = color.a;
 }
-
