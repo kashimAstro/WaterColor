@@ -28,6 +28,5 @@ void main() {
 
      gl_FragColor.rgb = texture2D(colorMap, newtc).rgb * color.rgb;
      gl_FragColor.a = color.a;
-     //gl_FragColor = cyn;//texture2D(colorMap, tc);
 }
 
