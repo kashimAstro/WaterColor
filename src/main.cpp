@@ -91,6 +91,8 @@ class ofApp : public ofBaseApp{
                 img.load("2.jpg");
             if(key == '3')
                 img.load("3.jpg");
+            if(key == '4')
+                img.load("4.jpg");
         }
 };
 
